@@ -1,0 +1,4 @@
+﻿  Source.cpp
+c:\users\godis\source\repos\compressor\compressor\hauffman.h(42): warning C4244: =: преобразование "std::streamsize" в "int", возможна потеря данных
+  compressor.vcxproj -> C:\Users\Godis\source\repos\compressor\Debug\compressor.exe
+  compressor.vcxproj -> C:\Users\Godis\source\repos\compressor\Debug\compressor.pdb (Partial PDB)
