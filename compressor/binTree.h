@@ -12,7 +12,6 @@ struct node {
 	T *value = nullptr;
 };
 
-
 template<typename T>
 struct tree {
 	node<T> *root = nullptr;

@@ -1,7 +1,16 @@
 #pragma once
 #include <fstream>
+#include <iostream>
+#include "binTree.h"
+#include "list.h"
 
+struct word {
+	int thisword = 0;
+	int frequency = 0;
+	bool isOne = false;
+};
 
+// create an empty int array
 int *createCountArray(int size) {
 	int *newArray = new int[size];
 	for (int i = 0; i < size; ++i) {
@@ -10,6 +19,7 @@ int *createCountArray(int size) {
 	return newArray;
 }
 
+// counts the words in file and fill the countArray (auxiliary)
 bool toCountWords(char* filename, int *countArray, int size, int wordLength) {
 
 	std::ifstream inp;
@@ -68,8 +78,50 @@ bool toCountWords(char* filename, int *countArray, int size, int wordLength) {
 			sequenceSize -= wordLength;
 		}
 
+		shiftBitsAt = sequenceSize;
+
 	}
 
 	inp.close();
 	return true;
 }
+
+// fill the countArray using previous function
+int *toFillCountArray(int wordLength, char *filename) {
+
+	int size = 1 << wordLength;
+	int *countArray = createCountArray(size);
+
+	if (!toCountWords(filename, countArray, size, wordLength)) {
+		std::cout << "Error" << std::endl;
+	}
+
+	return countArray;
+}
+
+// create the LIST of SIMPLE TREES OF WORDS - NOT SORTED
+list<tree<word> > *createTreeWordsList(int *countArray, int wordLength) {
+	list<tree<word> > *newTreeOfWords = listspace::createList<tree<word> >();
+	int size = 1 << wordLength;
+	for (int i = 0; i < size; ++i) {
+		// exept words with null frequency
+		if (countArray[i] != 0) {
+			word *newWord = new word{ i, countArray[i], false };
+			node<word> *newRoot = new node<word>{nullptr, nullptr, nullptr, newWord};
+			tree<word> *newTree = treespace::createSimpleTree<word>(newRoot);
+			listspace::pushBack<tree<word> >(newTreeOfWords, newTree);
+		}
+	}
+
+	return newTreeOfWords;
+}
+
+// comporator for sorting treeWordsList
+bool cmp(note<tree<word> > *a, note<tree<word> > *b) {
+	return a->value->root->value->frequency > b->value->root->value->frequency;
+}
+
+void sortTreeWordsList(list<tree<word> > *treeWordsList) {
+	listspace::sort<tree<word> >(treeWordsList, cmp);
+}
+
